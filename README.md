@@ -19,6 +19,7 @@ Go to this website [Your API Key!](https://platform.openai.com/api-keys), log in
 
 ## How to Install
 Either download the compiled code or clone the repository using the following command:
+
 ```git clone https://github.com/Kappa56799/ChatGpt-in-Terminal```
 
 From here follow the instructions in the usage section to run the program.
