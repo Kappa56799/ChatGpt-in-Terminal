@@ -26,7 +26,10 @@ To run the program you firstly need to set the environment variable OPENAI_API_K
 export OPENAI_API_KEY="<your key here>"
 ```
 Then you can run the program using the following command:
-``` go run main.go``` or ```go build -o  main.go <your output name here>```
+
+``` go run main.go``` 
+or 
+```go build -o  main.go <your output name here>```
 
 Compiling it using go build is recommended and allows you to run the program as an executable.
 
@@ -35,7 +38,10 @@ Once compiled you can run the program using the following command (on Linux):
 Running the program without flags allows you to input and receive multiple responses from and into the chatbot.
 
 Other way of running the program is using command line arguments which requires a flag and your prompt.
-```./main <flag> "Hello, how are you?"``` or ```./<your output name here> <flag> "Hello, how are you?"```
+
+```./main <flag> "Hello, how are you?"``` 
+or 
+```./<your output name here> <flag> "Hello, how are you?"```
 
 There is only 2 flags that can be used with the program:
 -m: This flag shows the entire message (including code) that is received from the chatbot. This includes the prompt and the response.
