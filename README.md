@@ -3,7 +3,8 @@
 ## Description
 This is a simple chatbot that uses GPT 3.5-turbo to generate responses and code straight from the terminal only. It is written in Go and uses the OpenAI API to generate responses.
 I made this because I wanted to make a chatbot that I could use in the terminal allowing me to easily output code to a file using redirects on Linux as well as learning to 
-program in Go :). I tested this on Arch Linux using kitty terminal and everything worked fine including running the program using 'go run' and compiling it using 'go build'.
+program in Go :). I tested this on Arch Linux using kitty terminal and everything worked fine including running the program using 'go run' and compiling it using 'go build'. 
+Feel free to fork and change this repository to your linking.
 
 ## Requirements
 - Go 1.16 or higher 
@@ -27,7 +28,7 @@ export OPENAI_API_KEY="<your key here>"
 ```
 Then you can run the program using the following command:
 
-``` go run main.go``` 
+```go run main.go``` 
 or 
 ```go build -o  main.go <your output name here>```
 
@@ -52,7 +53,7 @@ There is only 2 flags that can be used with the program:
 ## Helpful links
 To complete this project these two libraries came in handy:
 - [Spinner](https://github.com/briandowns/spinner)
-- [Resty/Rest API for Go](https://github.com/go-resty/resty/v2)
+- [Resty/Rest API for Go](https://github.com/go-resty/resty)
 
 Spinner allows for a cool loading animation while Resty allows for easy communication with the OpenAI API and formatting of the JSON responses.
 
