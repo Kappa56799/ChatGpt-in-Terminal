@@ -13,6 +13,8 @@ Feel free to fork and change this repository to your linking.
 
 # How to find your API key
 Go to this website [Your API Key!](https://platform.openai.com/api-keys), log in and create a key!
+![image](https://github.com/Kappa56799/ChatGpt-in-Terminal/assets/114831362/6e1759ab-44b8-4a41-bc01-4ce63405576f)
+
 
 
 ## How to Install
@@ -49,6 +51,12 @@ There is only 2 flags that can be used with the program:
 -c: This flag shows only the code that is received from the chatbot. This does not include explanations about the code.
 
 ## Examples
+![image](https://github.com/Kappa56799/ChatGpt-in-Terminal/assets/114831362/f17fdd93-5662-44df-b82c-21171be4a6b6)
+
+![image](https://github.com/Kappa56799/ChatGpt-in-Terminal/assets/114831362/2fbb4600-256a-41ae-be7e-654f0a6d00f2)
+
+![image](https://github.com/Kappa56799/ChatGpt-in-Terminal/assets/114831362/ad859a3e-6f4e-4899-b858-b0075796793a)
+
 
 ## Helpful links
 To complete this project these two libraries came in handy:
