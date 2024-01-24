@@ -37,7 +37,7 @@ func main() {
 func checkInput() {
     // Checks if number of arguments is 3 and if the third argument is not empty and if there is only 2 arguments and the second one is not empty
     if len(os.Args) == 3 && os.Args[2] == "" || len(os.Args) == 2 && os.Args[1] != ""{
-      fmt.Fprintln(os.Stderr, "usage: ./terGPT <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
+      fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
       os.Exit(2)
     }
 }
@@ -51,20 +51,20 @@ func SelectMode() {
     fmt.Println("--------------------------Please enter your prompt (CTRL + C to Quit)--------------------------")
     for true {
       inputText := ScanInput()
-      content := terGpt(inputText)
+      content := GPTQuery(inputText)
       fmt.Println(content + "\n")
     }
   } else if os.Args[1] == flagCode { // If the user provided the flag -c, the program will print the generated code
     input := os.Args[2]
-    content := terGpt(input)
+    content := GPTQuery(input)
     CodeContent := strings.Join(extractContent(content), "") // Changes the array of strings into one string
     fmt.Println(CodeContent)
   } else if os.Args[1] == flagMessage { // If the user provided the flag -m, the program will print the generated text and code (Full Message)
     input := os.Args[2]
-    content := terGpt(input)
+    content := GPTQuery(input)
     fmt.Println(content)
   } else { // If the user provided the wrong flag, the program will print the error message
-    fmt.Fprintln(os.Stderr, "usage: ./terGPT <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
+    fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
   }
 
 }
@@ -101,7 +101,7 @@ func extractContent(input string) []string {
 }
 
 // Sends the request to the API and returns the generated text
-func terGpt(input string) (string){
+func GPTQuery(input string) (string){
     // Gets the API key from the environment variable (You can change name if needed)
     apiKey := os.Getenv("OPENAI_API_KEY")
 
