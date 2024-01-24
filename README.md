@@ -51,8 +51,8 @@ There is only 2 flags that can be used with the program:
 
 ## Helpful links
 To complete this project these two libraries came in handy:
-- [Spinner](github.com/briandowns/spinner)
-- [Resty/Rest API for Go](github.com/go-resty/resty/v2)
+- [Spinner](https://github.com/briandowns/spinner)
+- [Resty/Rest API for Go](https://github.com/go-resty/resty/v2)
 
 Spinner allows for a cool loading animation while Resty allows for easy communication with the OpenAI API and formatting of the JSON responses.
 
