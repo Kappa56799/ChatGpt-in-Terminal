@@ -47,9 +47,13 @@ func SelectMode() {
 
   // If there is no arguments provided by the user, the program will ask for the input and print the generated text
   if len(os.Args) == 1 {
-    inputText := ScanInput()
-    content := terGpt(inputText)
-    fmt.Println(content)
+    // Allows the user to keep inputting the prompt until the user exits the program
+    fmt.Println("--------------------------Please enter your prompt (CTRL + C to Quit)--------------------------")
+    for true {
+      inputText := ScanInput()
+      content := terGpt(inputText)
+      fmt.Println(content + "\n")
+    }
   } else if os.Args[1] == flagCode { // If the user provided the flag -c, the program will print the generated code
     input := os.Args[2]
     content := terGpt(input)
@@ -98,7 +102,7 @@ func extractContent(input string) []string {
 
 // Sends the request to the API and returns the generated text
 func terGpt(input string) (string){
-    // Gets the API key from the environment variable
+    // Gets the API key from the environment variable (You can change name if needed)
     apiKey := os.Getenv("OPENAI_API_KEY")
 
     if apiKey == "" {
