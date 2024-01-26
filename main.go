@@ -84,7 +84,7 @@ func extractContent(input string) []string {
 
 
   // Splits the input into paragraphs
-	paragraphs := strings.Split(input, "```")
+  paragraphs := strings.Split(input, "```")
   formattedParagraphs := []string{}
 
   // If there code generated without the ``` tags, return the input
