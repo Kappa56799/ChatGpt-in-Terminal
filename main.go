@@ -55,16 +55,16 @@ func SelectMode() {
       fmt.Println(content + "\n")
     }
   } else if os.Args[1] == flagCode { // If the user provided the flag -c, the program will print the generated code
-    input := os.Args[2]
-    content := GPTQuery(input)
-    CodeContent := strings.Join(extractContent(content), "") // Changes the array of strings into one string
-    fmt.Println(CodeContent)
+      input := os.Args[2]
+      content := GPTQuery(input)
+      CodeContent := strings.Join(extractContent(content), "") // Changes the array of strings into one string
+      fmt.Println(CodeContent)
   } else if os.Args[1] == flagMessage { // If the user provided the flag -m, the program will print the generated text and code (Full Message)
-    input := os.Args[2]
-    content := GPTQuery(input)
-    fmt.Println(content)
+      input := os.Args[2]
+      content := GPTQuery(input)
+      fmt.Println(content)
   } else { // If the user provided the wrong flag, the program will print the error message
-    fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
+      fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
   }
 
 }
