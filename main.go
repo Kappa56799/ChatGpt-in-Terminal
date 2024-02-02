@@ -1,6 +1,6 @@
 /*
 Author: Kacper Palka palka@kacper.boo
-Description: This is a simple CLI tool that uses OpenAI's GPT-3 API to generate code or text based on the prompt you provide.
+Description: This is a simple CLI tool that uses OpenAI's API to generate code or text based on the prompt you provide.
 */
 
 package main
@@ -13,9 +13,10 @@ import (
   "strings"
   "bufio"
 
-  //Libraries used to achieve loading animation and rest client
+  //Libraries used to achieve loading animation, rest client and OCR
   "github.com/briandowns/spinner"
   "github.com/go-resty/resty/v2"
+  "github.com/otiai10/gosseract/v2"
 )
 
 // API endpoint
@@ -23,48 +24,52 @@ const (
   apiEndpoint = "https://api.openai.com/v1/chat/completions" 
   flagCode    = "-c"
   flagMessage = "-m"
+  flagOCR     = "-o"
 )
 
 func main() {
-    // Check if the user provided the correct input
-    checkInput()
-    
-    // Prints the generated code or text based on the input provided by the user
-    SelectMode()
-}
+	var flag string
+	var message string
 
-// Check if the user provided the correct input and if not, print the error message
-func checkInput() {
-    // Checks if number of arguments is 3 and if the third argument is not empty and if there is only 2 arguments and the second one is not empty
-    if len(os.Args) == 3 && os.Args[2] == "" || len(os.Args) == 2 && os.Args[1] != ""{
-      fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
-      os.Exit(2)
-    }
-}
-
-// Selects the mode based on the input provided by the user
-func SelectMode() {
+	if len(os.Args) > 1 {
+		flag = os.Args[1]
+	}
+	if len(os.Args) > 2 {
+		message = os.Args[2]
+	}
 
   // If there is no arguments provided by the user, the program will ask for the input and print the generated text
   if len(os.Args) == 1 {
     // Allows the user to keep inputting the prompt until the user exits the program
     fmt.Println("--------------------------Please enter your prompt (CTRL + C to Quit)--------------------------")
+
     for true {
       inputText := ScanInput()
       content := GPTQuery(inputText)
       fmt.Println(content + "\n")
     }
-  } else if os.Args[1] == flagCode { // If the user provided the flag -c, the program will print the generated code
-      input := os.Args[2]
-      content := GPTQuery(input)
+
+  } else if flag == flagCode && message != "" { 
+      // If the user provided the flag -c, the program will print the generated code
+      content := GPTQuery(message)
       CodeContent := strings.Join(extractContent(content), "") // Changes the array of strings into one string
       fmt.Println(CodeContent)
-  } else if os.Args[1] == flagMessage { // If the user provided the flag -m, the program will print the generated text and code (Full Message)
-      input := os.Args[2]
-      content := GPTQuery(input)
+
+  } else if flag == flagMessage && message != "" { // If the user provided the flag -m, the program will print the generated text and code (Full Message)
+      content := GPTQuery(message)
       fmt.Println(content)
+
+  } else if flag == flagOCR && message == "" {
+    // If the user provided the flag -p, the program will use OCR to extract the text from the picture and print it
+    client := gosseract.NewClient()
+    defer client.Close()
+    client.SetImage("/home/kappa/Screenshots/test.png")
+    text, _ := client.Text()
+    content := GPTQuery(text)
+    fmt.Println(content)
+
   } else { // If the user provided the wrong flag, the program will print the error message
-      fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) ")
+      fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./terGPT \nflags: -c (Code) -m (Full Message) -o (OCR from Picture)")
   }
 
 }
@@ -73,15 +78,11 @@ func SelectMode() {
 func ScanInput() (string){
   scanner := bufio.NewScanner(os.Stdin)
   scanner.Scan()
-
-  inputText := scanner.Text()
-
-  return inputText
+  return scanner.Text()
 }
 
 // Extracts only the code partt from the generated text by splitting it and returning it
 func extractContent(input string) []string {
-
 
   // Splits the input into paragraphs
   paragraphs := strings.Split(input, "```")
@@ -110,9 +111,7 @@ func GPTQuery(input string) (string){
       os.Exit(2)
     }
 
-  // Data variable is used to store the JSON response from the API
-    var data map[string]interface{}
-  // Loading animation
+    // Loading animation
     loading := spinner.New(spinner.CharSets[33], 100*time.Millisecond)
 
     loading.Start() // Start the loading animation
@@ -121,9 +120,9 @@ func GPTQuery(input string) (string){
     response, err := client.R().
                     SetAuthToken(apiKey).
                     SetHeader("Content-Type", "application/json").
-                    SetBody(map[string]interface{}{"model": "gpt-3.5-turbo",
+                    SetBody(map[string]interface{}{"model": "gpt-4-vision-preview",
                                                   "messages":   []interface{}{map[string]interface{}{"role": "assistant", "content": input}},
-                                                  "max_tokens": 500,
+                                                  "max_tokens": 1000,
     }).
     Post(apiEndpoint)
 
@@ -136,6 +135,9 @@ func GPTQuery(input string) (string){
       os.Exit(2)
     } 
     
+    // Data variable is used to store the JSON response from the API
+    var data map[string]interface{}
+
     // Stores the response body into the body variable
     body := response.Body()
     
