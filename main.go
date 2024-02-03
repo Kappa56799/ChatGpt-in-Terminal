@@ -13,6 +13,7 @@ import (
   "strings"
   "bufio"
   "os/exec"
+  "ChatGpt-in-Terminal/ErrorHandling"
 
   //Libraries used to achieve loading animation, rest client and OCR
   "github.com/briandowns/spinner"
