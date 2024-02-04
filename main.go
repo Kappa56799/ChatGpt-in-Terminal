@@ -19,6 +19,7 @@ import (
   "github.com/briandowns/spinner"
   "github.com/go-resty/resty/v2"
   "github.com/otiai10/gosseract/v2"
+
 )
 
 // API endpoint
@@ -30,9 +31,16 @@ const (
   Clipboard   = "wl-paste"
 )
 
+var (
+  flag string
+  message string
+  data map[string]interface{}
+
+  // Gets the API key from the environment variable (You can change name if needed)
+  apiKey = os.Getenv("OPENAI_API_KEY")
+)
+
 func main() {
-	var flag string = ""
-	var message string = ""
 
   // If there are arguments provided by the user, the program will use them as the input
 	if len(os.Args) > 1 {
@@ -65,36 +73,28 @@ func main() {
       fmt.Println(content)
 
   } else if flag == flagOCR {
-    // If the user provided the flag -o, the program will use OCR to extract the text from the picture and use that in the prompt
-    client := gosseract.NewClient()
-    defer client.Close() // waits until everything is done and then closes the client
-    // Uses the clipboard to get the picture and then uses OCR to extract the text from the picture
-    cmd := exec.Command(Clipboard)
-    clipboardImage, err := cmd.Output()
+      // If the user provided the flag -o, the program will use OCR to extract the text from the picture and use that in the prompt
+      client := gosseract.NewClient()
+      defer client.Close() // waits until everything is done and then closes the client
+      // Uses the clipboard to get the picture and then uses OCR to extract the text from the picture
+      cmd := exec.Command(Clipboard)
+      clipboardImage, err := cmd.Output()
 
-    // If there is an error with the OCR, print the error message and exit the program
-    ShowError(err)
+      // If there is an error with the OCR, print the error message and exit the program
+      ErrorHandling.OCRError(err)
 
-    // Sets the image from the bytes and then gets the text from the picture
-    client.SetImageFromBytes(clipboardImage)
-    text, _ := client.Text()
+      // Sets the image from the bytes and then gets the text from the picture
+      client.SetImageFromBytes(clipboardImage)
+      text, _ := client.Text()
 
-    // Queries the API with the text extracted from the picture and prints the generated text
-    content := GPTQuery(text + " " + message)
-    fmt.Println(content)
+      // Queries the API with the text extracted from the picture and prints the generated text
+      content := GPTQuery(text + " " + message)
+      fmt.Println(content)
 
   } else { // If the user provided the wrong flag, the program will print the error message
-      fmt.Fprintln(os.Stderr, "usage: ./<filename> <flag> <Your Prompt> or ./<filename> \nflags: -c (Code) -m (Full Message) -o (OCR from Picture)")
+      ErrorHandling.CorrectInput()
   }
 
-}
-
-// Prints the error message and exits the program
-func ShowError(err error) {
-  if err != nil {
-    fmt.Println("Error: ", err)
-    os.Exit(2)
-  }
 }
 
 // Scans for the input provided by the user from the terminal and returns it
@@ -121,19 +121,15 @@ func extractContent(input string) []string {
     formattedParagraphs = append(formattedParagraphs, paragraphs[i])
 	}
 
+  // Returns the array of strings
 	return formattedParagraphs
 }
 
 // Sends the request to the API and returns the generated text
 func GPTQuery(input string) (string){
-    // Gets the API key from the environment variable (You can change name if needed)
-    apiKey := os.Getenv("OPENAI_API_KEY")
     
     //Checks if apiKey is set, if not, prints the error message and exits the program
-    if apiKey == "" {
-      fmt.Println("Please set the OPENAI_API_KEY environment variable")
-      os.Exit(2)
-    }
+    ErrorHandling.CheckAPIKey(apiKey)
 
     // Loading animation
     loading := spinner.New(spinner.CharSets[33], 100*time.Millisecond)
@@ -153,11 +149,8 @@ func GPTQuery(input string) (string){
     loading.Stop() // Stop the loading animation
 
     // If there is an error with the request, print the error message and exit the program
-    ShowError(err)
+    ErrorHandling.RequestError(err)
     
-    // Data variable is used to store the JSON response from the API
-    var data map[string]interface{}
-
     // Stores the response body into the body variable
     body := response.Body()
     
@@ -165,22 +158,15 @@ func GPTQuery(input string) (string){
     err = json.Unmarshal(body, &data)
 
     // If there is an error with decoding the JSON response, print the error message and exit the program
-    ShowError(err)
+    ErrorHandling.JSONError(err)
 
     // If there is an error in the request, print the error message and exit the program
-    if errDetails, ok := data["error"].(map[string]interface{}); ok {
-
-      fmt.Println("Error detected:")
-      fmt.Println("Message:", errDetails["message"])
-      fmt.Println("Type:", errDetails["type"])
-      fmt.Println("Param:", errDetails["param"])
-      fmt.Println("Code:", errDetails["code"])
-      os.Exit(2)
-    } 
+    ErrorHandling.GPTError(data)
 
     // Stores the generated text into the content variable
     content := data["choices"].([]interface{})[0].(map[string]interface{})["message"].(map[string]interface{})["content"].(string)
 
+    // Returns the generated text
     return content
 }
 
