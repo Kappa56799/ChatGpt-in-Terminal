@@ -98,13 +98,13 @@ func main() {
 }
 
 // Scans for the input provided by the user from the terminal and returns it
-func ScanInput() (string){
+func ScanInput() string {
   scanner := bufio.NewScanner(os.Stdin)
   scanner.Scan()
   return scanner.Text()
 }
 
-// Extracts only the code partt from the generated text by splitting it and returning it
+// Extracts only the code part from the generated text by splitting it and returning it
 func extractContent(input string) []string {
 
   // Splits the input into paragraphs
@@ -126,7 +126,7 @@ func extractContent(input string) []string {
 }
 
 // Sends the request to the API and returns the generated text
-func GPTQuery(input string) (string){
+func GPTQuery(input string) string {
     
     //Checks if apiKey is set, if not, prints the error message and exits the program
     ErrorHandling.CheckAPIKey(apiKey)
@@ -140,7 +140,7 @@ func GPTQuery(input string) (string){
     response, err := client.R().
                     SetAuthToken(apiKey).
                     SetHeader("Content-Type", "application/json").
-                    SetBody(map[string]interface{}{"model": "gpt-4-vision-preview",
+                    SetBody(map[string]interface{}{"model": "gpt-4",
                                                   "messages":   []interface{}{map[string]interface{}{"role": "assistant", "content": input}},
                                                   "max_tokens": 1000,
     }).
@@ -154,7 +154,7 @@ func GPTQuery(input string) (string){
     // Stores the response body into the body variable
     body := response.Body()
     
-  // Decodes the JSON response into the data variable using marshal
+    // Decodes the JSON response into the data variable using marshal
     err = json.Unmarshal(body, &data)
 
     // If there is an error with decoding the JSON response, print the error message and exit the program
