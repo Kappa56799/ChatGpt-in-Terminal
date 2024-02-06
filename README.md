@@ -9,7 +9,7 @@ Feel free to fork and change this repository to your linking.
 ## Requirements
 - Go 1.16 or higher 
 - OpenAI API key
-- Linux (Haven't tested on Windows)
+- Tessaract OCR (optional)
 
 # How to find your API key
 Go to this website [Your API Key!](https://platform.openai.com/api-keys), log in and create a key!
