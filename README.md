@@ -1,7 +1,7 @@
 # ChatGpt-in-Terminal
 
 ## Description
-This is a simple chatbot that uses GPT 3.5-turbo to generate responses and code straight from the terminal only. It is written in Go and uses the OpenAI API to generate responses.
+This is a simple chatbot that uses OpenAI GPT to generate responses and code straight from the terminal only. It is written in Go and uses the OpenAI API to generate responses.
 I made this because I wanted to make a chatbot that I could use in the terminal allowing me to easily output code to a file using redirects on Linux as well as learning to 
 program in Go :). I tested this on Arch Linux using kitty terminal and everything worked fine including running the program using 'go run' and compiling it using 'go build'. 
 Feel free to fork and change this repository to your linking.
@@ -29,6 +29,8 @@ To run the program you firstly need to set the environment variable OPENAI_API_K
 ```bash
 export OPENAI_API_KEY="<your key here>"
 ```
+Or you can change the value of the variable in the main.go file to your key and compile the app yourself.
+
 Then you can run the program using the following command:
 
 ```go run main.go``` 
@@ -47,9 +49,10 @@ Other way of running the program is using command line arguments which requires 
 or 
 ```./<your output name here> <flag> "Hello, how are you?"```
 
-There is only 2 flags that can be used with the program:
+There is only 3 flags that can be used with the program:
 -m: This flag shows the entire message (including code) that is received from the chatbot. This includes the prompt and the response.
 -c: This flag shows only the code that is received from the chatbot. This does not include explanations about the code.
+-o: This flag uses OCR to extract text from an image in clipboard and sends it to the chatbot.
 
 ## Examples
 ![image](https://github.com/Kappa56799/ChatGpt-in-Terminal/assets/114831362/f17fdd93-5662-44df-b82c-21171be4a6b6)
@@ -63,6 +66,7 @@ There is only 2 flags that can be used with the program:
 To complete this project these two libraries came in handy:
 - [Spinner](https://github.com/briandowns/spinner)
 - [Resty/Rest API for Go](https://github.com/go-resty/resty)
+- [Tesseract for Golang](https://github.com/otiai10/gosseract)
 
 Spinner allows for a cool loading animation while Resty allows for easy communication with the OpenAI API and formatting of the JSON responses.
 
